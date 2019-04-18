@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { Button, TextInput, View, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
 
 //Login Box
-export default class LoginBox extends Component {
+class LoginBox extends Component {
 
     constructor(props) {
       super(props);
@@ -15,9 +16,14 @@ export default class LoginBox extends Component {
   
     submitLogin(event) {
       event.preventDefault();
-      this.setState({isLoginSubmitted : true})
-      const { username, password } = this.state;
-      Alert.alert('Credentials', `${username} + ${password}`);
+      setTimeout(() => {
+        this.props.dispatch({
+          type: 'LOGIN_SUCCESS'
+        })
+      }, 1000);
+      this.props.dispatch({
+        type: 'LOADING'
+      });
     }
 
     render() {
@@ -64,3 +70,5 @@ const styles = StyleSheet.create({
       marginBottom: 10
     }
 });
+
+export default connect()(LoginBox);

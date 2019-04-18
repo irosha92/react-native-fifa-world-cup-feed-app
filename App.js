@@ -1,18 +1,24 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from './reducers/reducer'
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
-import LoginBox from './screens/LoginBox';
-import Loading from './screens/Loading';
+import MainContainer from './screens/MainContainer';
+
+const store = createStore(reducer);
 
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-    isUserLoggedIn: false,
-    isLoading : true
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoadingComplete: false
+    };
+  }
 
   render() {
+
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -22,17 +28,13 @@ export default class App extends React.Component {
         />
       );
     } else {
-      if (this.state.isLoading) {
-        return (
-          <Loading />
-        );
-      }
       return (
+        <Provider store = {store}>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {!this.state.isLoadingComplete && <Loading />}
-          {!this.state.isUserLoggedIn ? <LoginBox/> : <AppNavigator />}
+          <MainContainer />
         </View>
+        </Provider>
       );
     }
   }
